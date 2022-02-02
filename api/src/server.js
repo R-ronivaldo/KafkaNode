@@ -1,7 +1,10 @@
+import 'dotenv/config.js';
 import express from 'express';
 import { Kafka } from 'kafkajs';
 
 import routes from './routes';
+
+require("./database");
 
 const app = express();
 app.use(express.json());
