@@ -1,12 +1,14 @@
+require('dotenv/config');
 import { Kafka } from 'kafkajs';
+import Mail from './lib/Mail';
 
 const kafka = new Kafka({
     brokers: ['localhost:9092'],
-    clientId: 'certificate',
+    clientId: 'email',
 });
 
-const topic = 'issue-certificate';
-const consumer = kafka.consumer({ groupId: 'certificate-group'});
+const topic = 'issue-email';
+const consumer = kafka.consumer({ groupId: 'email-group'});
 const producer = kafka.producer();
 
 async function run() {
@@ -20,10 +22,17 @@ async function run() {
 
             const payload = JSON.parse(message.value);
 
+            await Mail.sendMail({
+                from: 'Fila Teste <fila@filateste.com.br>',
+                to: `${payload.user.name} <${payload.user.email}>`,
+                subject: 'Cadastro de Usuário',
+                html: `Olá, ${payload.user.name}, cadastro realizado com sucesso!`
+            });
+
             await producer.send({
-                topic: 'certificate-response',
+                topic: 'email-response',
                 messages: [
-                    { value: `Certificado gerado para o usuário ${payload.user.name}!`}
+                    { value: `Email enviado para o usuário ${payload.user.name}!`}
                 ]
             })
         },

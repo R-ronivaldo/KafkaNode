@@ -3,14 +3,17 @@ import { CompressionTypes } from 'kafkajs';
 
 const routes = express.Router();
 
-routes.post("/certificate", async (req, res) => {
+routes.post("/users", async (req, res) => {
+    const { name, email } = req.body;
+
+    // create user on dabase
+
     const message = {
-        user: { id: 1, name: 'Junior Ferreira'},
-        course: 'Kafka com Node',
-        grade: 5,
+        user: { name: name, email: email},
     }
+
     await req.producer.send({
-        topic: 'issue-certificate',
+        topic: 'issue-email',
         compression: CompressionTypes.GZIP,
         messages: [
             { value: JSON.stringify(message) },

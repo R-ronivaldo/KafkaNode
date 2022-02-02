@@ -4,6 +4,7 @@ import { Kafka } from 'kafkajs';
 import routes from './routes';
 
 const app = express();
+app.use(express.json());
 
 //conect
 const kafka = new Kafka({
@@ -16,7 +17,7 @@ const kafka = new Kafka({
 });
 
 const producer = kafka.producer();
-const consumer = kafka.consumer({ groupId: 'certificate-group-to-receive'});
+const consumer = kafka.consumer({ groupId: 'email-group-to-receive'});
 
 // disponibiliza p/ todas as rotas
 app.use((req, res, next) => {
@@ -32,7 +33,7 @@ async function run() {
     await producer.connect();
     await consumer.connect();
 
-    await consumer.subscribe({ topic: 'certificate-response' });
+    await consumer.subscribe({ topic: 'email-response' });
 
     await consumer.run({
         eachMessage: async ({ topic, partition, message }) => {
