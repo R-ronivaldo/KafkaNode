@@ -23,8 +23,8 @@ async function run() {
             const payload = JSON.parse(message.value);
 
             await Mail.sendMail({
-                from: 'Fila Teste <fila@filateste.com.br>',
-                to: `${payload.user.name} <${payload.user.email}>`,
+                from: `<${process.env.MAIL_USER}>`,
+                to: `<${payload.user.email}>`,
                 subject: 'Cadastro de Usuário',
                 html: `Olá, ${payload.user.name}, cadastro realizado com sucesso!`
             });
